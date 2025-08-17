@@ -3,7 +3,7 @@
 using namespace std;
 
 int main() {
-  string s = "OpenAI";
+  string s = "Hello";
   int i = 0, j = s.size() - 1;
   while (i < j) {
     swap(s[i], s[j]);
