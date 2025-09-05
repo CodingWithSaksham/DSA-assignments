@@ -1,57 +1,48 @@
+#include "queue.hpp"
 #include <iostream>
-using namespace std;
-#define MAX 100
-
-class Queue {
-  int arr[MAX];
-  int front, rear;
-
-public:
-  Queue() { front = rear = -1; }
-  bool isEmpty() { return front == -1; }
-  void enqueue(int x) {
-    if (rear == MAX - 1)
-      return;
-    if (isEmpty())
-      front = 0;
-    arr[++rear] = x;
-  }
-  int dequeue() {
-    if (isEmpty())
-      return -1;
-    int val = arr[front];
-    if (front == rear)
-      front = rear = -1;
-    else
-      front++;
-    return val;
-  }
-  int size() { return isEmpty() ? 0 : (rear - front + 1); }
-  int frontVal() { return isEmpty() ? -1 : arr[front]; }
-};
 
 class Stack {
-  Queue q1, q2;
-
+  Queue* in_queue;
+  Queue* data_queue;
 public:
-  void push(int x) {
-    q2.enqueue(x);
-    while (!q1.isEmpty())
-      q2.enqueue(q1.dequeue());
-    Queue temp = q1;
-    q1 = q2;
-    q2 = temp;
+  Stack() {
+    in_queue = new Queue();
+    data_queue = new Queue();
   }
-  void pop() { q1.dequeue(); }
-  void top() { cout << q1.frontVal() << "\n"; }
+
+  void push(int item) {
+    if (isFull()) {
+      return;
+    }
+    in_queue->enqueue(item);
+    while (!data_queue->isEmpty()) in_queue->enqueue(data_queue->dequeue());
+
+    long temp = (long)in_queue;
+    in_queue = data_queue;
+    data_queue = (Queue*)temp;
+  }
+
+  int pop() {
+    if (isEmpty()) {
+      return 0;
+    }
+    return data_queue->dequeue();
+  }
+
+  bool isEmpty() {
+    return data_queue->isEmpty();
+  }
+  bool isFull() {
+    return data_queue->isFull();
+  }
 };
 
 int main() {
-  Stack st;
-  st.push(10);
-  st.push(20);
-  st.push(30);
-  st.top();
-  st.pop();
-  st.top();
+  Stack s;
+  s.push(1);
+  s.push(2);
+  s.push(3);
+  std::cout << s.pop() << " should be 3\n";
+  std::cout << s.pop() << " should be 2\n";
+  std::cout << s.pop() << " should be 1\n";
 }
